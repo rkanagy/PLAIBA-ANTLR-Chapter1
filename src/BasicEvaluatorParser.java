@@ -17,7 +17,8 @@ public class BasicEvaluatorParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		ADD=1, SUB=2, MUL=3, DIV=4, EQ=5, LT=6, GT=7, PRINT=8, LPAREN=9, RPAREN=10, 
-		DEFINE=11, IF=12, WHILE=13, SET=14, BEGIN=15, INTEGER=16, NAME=17, WS=18;
+		DEFINE=11, IF=12, WHILE=13, SET=14, BEGIN=15, INTEGER=16, NAME=17, COMMENT=18, 
+		WS=19;
 	public static final int
 		RULE_prog = 0, RULE_input = 1, RULE_funDef = 2, RULE_argList = 3, RULE_expression = 4, 
 		RULE_value = 5, RULE_function = 6, RULE_variable = 7;
@@ -40,7 +41,7 @@ public class BasicEvaluatorParser extends Parser {
 		return new String[] {
 			null, "ADD", "SUB", "MUL", "DIV", "EQ", "LT", "GT", "PRINT", "LPAREN", 
 			"RPAREN", "DEFINE", "IF", "WHILE", "SET", "BEGIN", "INTEGER", "NAME", 
-			"WS"
+			"COMMENT", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -769,7 +770,7 @@ public class BasicEvaluatorParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\24g\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\25g\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\6\2\24\n\2\r\2"+
 		"\16\2\25\3\3\3\3\5\3\32\n\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\5\3\5\7\5%\n"+
 		"\5\f\5\16\5(\13\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6"+

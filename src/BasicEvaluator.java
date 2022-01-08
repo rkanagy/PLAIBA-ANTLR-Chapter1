@@ -11,7 +11,7 @@ public class BasicEvaluator {
     public static void main(String[] args) throws Exception {
         Memory memory = new Memory();
 
-        // REPL
+        // Read-Evaluate-Print Loop
         boolean quittingTime = false;
         while (!quittingTime) {
             String strInput = getInput();

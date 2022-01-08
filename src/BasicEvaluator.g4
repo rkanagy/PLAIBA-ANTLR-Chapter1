@@ -41,4 +41,5 @@ BEGIN     : 'begin' ;
 INTEGER   : [-]? [0-9]+ ;
 // NAME: match any sequence of characters not an integer nor containing blank, (, ), or ;
 NAME      : ~[ ();\t\r\n]+ ;
+COMMENT   : ';' ~[\r\n]* -> skip ;
 WS        : [ \t\r\n]+ -> skip ;
