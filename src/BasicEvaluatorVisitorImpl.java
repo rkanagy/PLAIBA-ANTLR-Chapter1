@@ -10,13 +10,18 @@ public class BasicEvaluatorVisitorImpl  extends BasicEvaluatorBaseVisitor<BasicE
 
     @Override
     public BasicEvaluatorInfo visitFunDef(BasicEvaluatorParser.FunDefContext ctx) {
-        String functionName = ctx.function().getText();
         FunctionDefinition function = new FunctionDefinition();
+
+        String functionName = ctx.function().getText();
+        function.name = functionName;
+
         List<BasicEvaluatorParser.VariableContext> arguments = ctx.argList().variable();
         for (BasicEvaluatorParser.VariableContext argument :arguments) {
             function.argumentList.add(argument.getText());
         }
+
         function.expression = ctx.expression();
+
         memory.setFunction(functionName, function);
 
         return new BasicEvaluatorInfo(functionName);

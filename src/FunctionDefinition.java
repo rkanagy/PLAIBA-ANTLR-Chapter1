@@ -5,6 +5,8 @@ public class FunctionDefinition {
         argumentList = new ArrayList<>();
     }
 
+    public String name;
+
     public ArrayList<String> argumentList;
 
     public BasicEvaluatorParser.ExpressionContext expression;
