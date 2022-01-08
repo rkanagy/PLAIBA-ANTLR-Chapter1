@@ -2,10 +2,10 @@ grammar BasicEvaluator ;
 
 prog      : input+ ;
 input     : expression                                                            # expressionInput
-          | fundef                                                                # funDefInput
+          | funDef                                                                # funDefInput
           ;
-fundef    : LPAREN DEFINE function arglist expression RPAREN ;
-arglist   : LPAREN variable* RPAREN ;
+funDef    : LPAREN DEFINE function argList expression RPAREN ;
+argList   : LPAREN variable* RPAREN ;
 expression: value                                                                 # valueExpr
           | variable                                                              # variableExpr
           | LPAREN IF expression expression expression RPAREN                     # ifExpr
@@ -13,7 +13,7 @@ expression: value                                                               
           | LPAREN SET variable expression RPAREN                                 # setExpr
           | LPAREN BEGIN expression+ RPAREN                                       # beginExpr
           | LPAREN function expression* RPAREN                                    # functionExpr
-          | LPAREN op=('+'|'-'|'*'|'/'|'='|'<'|'>') expression expression RPAREN  # optrExpr
+          | LPAREN op=('+'|'-'|'*'|'/'|'='|'<'|'>') expression expression RPAREN  # operatorExpr
           | LPAREN PRINT expression RPAREN                                        # printExpr
           ;
 

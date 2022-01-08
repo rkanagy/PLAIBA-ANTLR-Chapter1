@@ -9,32 +9,24 @@ import java.util.List;
 
 public class BasicEvaluator {
     public static void main(String[] args) throws Exception {
-        String inputFile;
-        CharStream input;
-        SymbolTable globalEnv = new SymbolTable();
-        FunctionTable functions = new FunctionTable();
-        if (args.length > 0) { // input from file
-            inputFile = args[0];
-            InputStream is = new FileInputStream(inputFile);
-            input = CharStreams.fromStream(is);
-            parse(input, globalEnv, functions);
-        } else { // REPL
-            boolean quittingTime = false;
-            while (!quittingTime) {
-                String strInput = getInput();
-                input = CharStreams.fromString(strInput);
+        Memory memory = new Memory();
 
-                if (strInput.equals("quit"))
-                    quittingTime = true;
-                else if (strInput.equals("clear")) {
-                    globalEnv.clearSymbols();
-                    functions.clear();
-                    System.out.println("Variables and Functions cleared");
-                } else {
-                    parse(input, globalEnv, functions);
-                }
+        // REPL
+        boolean quittingTime = false;
+        while (!quittingTime) {
+            String strInput = getInput();
+
+            if (strInput.trim().equals("quit"))
+                quittingTime = true;
+            else if (strInput.trim().equals("clear")) {
+                memory.clear();
+            } else if (strInput.startsWith("define", 1)) {
+                parseDefinition(strInput, memory);
+            } else {
+                parseExpression(strInput, memory);
             }
         }
+
     }
 
     private static String getInput() throws IOException {
@@ -62,13 +54,35 @@ public class BasicEvaluator {
         return String.join("\n", lines);
     }
 
-    private static void parse(CharStream input, SymbolTable globalEnv, FunctionTable functions) {
+    private static void parseDefinition(String strInput, Memory memory) {
+        BasicEvaluatorParser parser = getParser(strInput);
+        ParseTree tree = parser.funDef();
+
+        BasicEvaluatorVisitorImpl visitor = new BasicEvaluatorVisitorImpl(memory);
+        BasicEvaluatorInfo info = visitor.visit(tree);
+
+        String functionName = info.getFunctionName();
+        if (functionName != null && functionName.trim().length() > 0) {
+            System.out.println(info.getFunctionName());
+        }
+    }
+    private static void parseExpression(String strInput, Memory memory) {
+        BasicEvaluatorParser parser = getParser(strInput);
+        ParseTree tree = parser.expression();
+
+        BasicEvaluatorVisitorImpl visitor = new BasicEvaluatorVisitorImpl(memory);
+        BasicEvaluatorInfo info = visitor.visit(tree);
+
+        Value value = info.getExpressionValue();
+        if (value != null && value.isDefined()) {
+            System.out.println(value.getValue());
+        }
+    }
+
+    private static BasicEvaluatorParser getParser(String strInput) {
+        CharStream input = CharStreams.fromString(strInput);
         BasicEvaluatorLexer lexer = new BasicEvaluatorLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        BasicEvaluatorParser parser = new BasicEvaluatorParser(tokens);
-        ParseTree tree = parser.prog();
-
-        BasicEvaluatorVisitorImpl visitor = new BasicEvaluatorVisitorImpl(globalEnv, functions);
-        visitor.visit(tree);
+        return new BasicEvaluatorParser(tokens);
     }
 }

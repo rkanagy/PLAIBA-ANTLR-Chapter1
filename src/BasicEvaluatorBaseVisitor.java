@@ -37,14 +37,14 @@ public class BasicEvaluatorBaseVisitor<T> extends AbstractParseTreeVisitor<T> im
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFundef(BasicEvaluatorParser.FundefContext ctx) { return visitChildren(ctx); }
+	@Override public T visitFunDef(BasicEvaluatorParser.FunDefContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitArglist(BasicEvaluatorParser.ArglistContext ctx) { return visitChildren(ctx); }
+	@Override public T visitArgList(BasicEvaluatorParser.ArgListContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -100,7 +100,7 @@ public class BasicEvaluatorBaseVisitor<T> extends AbstractParseTreeVisitor<T> im
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitOptrExpr(BasicEvaluatorParser.OptrExprContext ctx) { return visitChildren(ctx); }
+	@Override public T visitOperatorExpr(BasicEvaluatorParser.OperatorExprContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

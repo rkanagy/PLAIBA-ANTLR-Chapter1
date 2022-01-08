@@ -30,17 +30,17 @@ public interface BasicEvaluatorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunDefInput(BasicEvaluatorParser.FunDefInputContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link BasicEvaluatorParser#fundef}.
+	 * Visit a parse tree produced by {@link BasicEvaluatorParser#funDef}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFundef(BasicEvaluatorParser.FundefContext ctx);
+	T visitFunDef(BasicEvaluatorParser.FunDefContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link BasicEvaluatorParser#arglist}.
+	 * Visit a parse tree produced by {@link BasicEvaluatorParser#argList}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitArglist(BasicEvaluatorParser.ArglistContext ctx);
+	T visitArgList(BasicEvaluatorParser.ArgListContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code valueExpr}
 	 * labeled alternative in {@link BasicEvaluatorParser#expression}.
@@ -91,12 +91,12 @@ public interface BasicEvaluatorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunctionExpr(BasicEvaluatorParser.FunctionExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code optrExpr}
+	 * Visit a parse tree produced by the {@code operatorExpr}
 	 * labeled alternative in {@link BasicEvaluatorParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitOptrExpr(BasicEvaluatorParser.OptrExprContext ctx);
+	T visitOperatorExpr(BasicEvaluatorParser.OperatorExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code printExpr}
 	 * labeled alternative in {@link BasicEvaluatorParser#expression}.

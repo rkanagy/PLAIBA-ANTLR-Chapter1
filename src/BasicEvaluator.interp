@@ -43,8 +43,8 @@ WS
 rule names:
 prog
 input
-fundef
-arglist
+funDef
+argList
 expression
 value
 function

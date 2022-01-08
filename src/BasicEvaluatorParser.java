@@ -19,11 +19,11 @@ public class BasicEvaluatorParser extends Parser {
 		ADD=1, SUB=2, MUL=3, DIV=4, EQ=5, LT=6, GT=7, PRINT=8, LPAREN=9, RPAREN=10, 
 		DEFINE=11, IF=12, WHILE=13, SET=14, BEGIN=15, INTEGER=16, NAME=17, WS=18;
 	public static final int
-		RULE_prog = 0, RULE_input = 1, RULE_fundef = 2, RULE_arglist = 3, RULE_expression = 4, 
+		RULE_prog = 0, RULE_input = 1, RULE_funDef = 2, RULE_argList = 3, RULE_expression = 4, 
 		RULE_value = 5, RULE_function = 6, RULE_variable = 7;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"prog", "input", "fundef", "arglist", "expression", "value", "function", 
+			"prog", "input", "funDef", "argList", "expression", "value", "function", 
 			"variable"
 		};
 	}
@@ -158,8 +158,8 @@ public class BasicEvaluatorParser extends Parser {
 		}
 	}
 	public static class FunDefInputContext extends InputContext {
-		public FundefContext fundef() {
-			return getRuleContext(FundefContext.class,0);
+		public FunDefContext funDef() {
+			return getRuleContext(FunDefContext.class,0);
 		}
 		public FunDefInputContext(InputContext ctx) { copyFrom(ctx); }
 		@Override
@@ -200,7 +200,7 @@ public class BasicEvaluatorParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(22);
-				fundef();
+				funDef();
 				}
 				break;
 			}
@@ -216,33 +216,33 @@ public class BasicEvaluatorParser extends Parser {
 		return _localctx;
 	}
 
-	public static class FundefContext extends ParserRuleContext {
+	public static class FunDefContext extends ParserRuleContext {
 		public TerminalNode LPAREN() { return getToken(BasicEvaluatorParser.LPAREN, 0); }
 		public TerminalNode DEFINE() { return getToken(BasicEvaluatorParser.DEFINE, 0); }
 		public FunctionContext function() {
 			return getRuleContext(FunctionContext.class,0);
 		}
-		public ArglistContext arglist() {
-			return getRuleContext(ArglistContext.class,0);
+		public ArgListContext argList() {
+			return getRuleContext(ArgListContext.class,0);
 		}
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
 		public TerminalNode RPAREN() { return getToken(BasicEvaluatorParser.RPAREN, 0); }
-		public FundefContext(ParserRuleContext parent, int invokingState) {
+		public FunDefContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_fundef; }
+		@Override public int getRuleIndex() { return RULE_funDef; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BasicEvaluatorVisitor ) return ((BasicEvaluatorVisitor<? extends T>)visitor).visitFundef(this);
+			if ( visitor instanceof BasicEvaluatorVisitor ) return ((BasicEvaluatorVisitor<? extends T>)visitor).visitFunDef(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final FundefContext fundef() throws RecognitionException {
-		FundefContext _localctx = new FundefContext(_ctx, getState());
-		enterRule(_localctx, 4, RULE_fundef);
+	public final FunDefContext funDef() throws RecognitionException {
+		FunDefContext _localctx = new FunDefContext(_ctx, getState());
+		enterRule(_localctx, 4, RULE_funDef);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -253,7 +253,7 @@ public class BasicEvaluatorParser extends Parser {
 			setState(27);
 			function();
 			setState(28);
-			arglist();
+			argList();
 			setState(29);
 			expression();
 			setState(30);
@@ -271,7 +271,7 @@ public class BasicEvaluatorParser extends Parser {
 		return _localctx;
 	}
 
-	public static class ArglistContext extends ParserRuleContext {
+	public static class ArgListContext extends ParserRuleContext {
 		public TerminalNode LPAREN() { return getToken(BasicEvaluatorParser.LPAREN, 0); }
 		public TerminalNode RPAREN() { return getToken(BasicEvaluatorParser.RPAREN, 0); }
 		public List<VariableContext> variable() {
@@ -280,20 +280,20 @@ public class BasicEvaluatorParser extends Parser {
 		public VariableContext variable(int i) {
 			return getRuleContext(VariableContext.class,i);
 		}
-		public ArglistContext(ParserRuleContext parent, int invokingState) {
+		public ArgListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_arglist; }
+		@Override public int getRuleIndex() { return RULE_argList; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BasicEvaluatorVisitor ) return ((BasicEvaluatorVisitor<? extends T>)visitor).visitArglist(this);
+			if ( visitor instanceof BasicEvaluatorVisitor ) return ((BasicEvaluatorVisitor<? extends T>)visitor).visitArgList(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final ArglistContext arglist() throws RecognitionException {
-		ArglistContext _localctx = new ArglistContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_arglist);
+	public final ArgListContext argList() throws RecognitionException {
+		ArgListContext _localctx = new ArgListContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_argList);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
@@ -351,30 +351,6 @@ public class BasicEvaluatorParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
-	public static class OptrExprContext extends ExpressionContext {
-		public Token op;
-		public TerminalNode LPAREN() { return getToken(BasicEvaluatorParser.LPAREN, 0); }
-		public List<ExpressionContext> expression() {
-			return getRuleContexts(ExpressionContext.class);
-		}
-		public ExpressionContext expression(int i) {
-			return getRuleContext(ExpressionContext.class,i);
-		}
-		public TerminalNode RPAREN() { return getToken(BasicEvaluatorParser.RPAREN, 0); }
-		public TerminalNode ADD() { return getToken(BasicEvaluatorParser.ADD, 0); }
-		public TerminalNode SUB() { return getToken(BasicEvaluatorParser.SUB, 0); }
-		public TerminalNode MUL() { return getToken(BasicEvaluatorParser.MUL, 0); }
-		public TerminalNode DIV() { return getToken(BasicEvaluatorParser.DIV, 0); }
-		public TerminalNode EQ() { return getToken(BasicEvaluatorParser.EQ, 0); }
-		public TerminalNode LT() { return getToken(BasicEvaluatorParser.LT, 0); }
-		public TerminalNode GT() { return getToken(BasicEvaluatorParser.GT, 0); }
-		public OptrExprContext(ExpressionContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof BasicEvaluatorVisitor ) return ((BasicEvaluatorVisitor<? extends T>)visitor).visitOptrExpr(this);
-			else return visitor.visitChildren(this);
-		}
-	}
 	public static class ValueExprContext extends ExpressionContext {
 		public ValueContext value() {
 			return getRuleContext(ValueContext.class,0);
@@ -400,6 +376,30 @@ public class BasicEvaluatorParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof BasicEvaluatorVisitor ) return ((BasicEvaluatorVisitor<? extends T>)visitor).visitWhileExpr(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+	public static class OperatorExprContext extends ExpressionContext {
+		public Token op;
+		public TerminalNode LPAREN() { return getToken(BasicEvaluatorParser.LPAREN, 0); }
+		public List<ExpressionContext> expression() {
+			return getRuleContexts(ExpressionContext.class);
+		}
+		public ExpressionContext expression(int i) {
+			return getRuleContext(ExpressionContext.class,i);
+		}
+		public TerminalNode RPAREN() { return getToken(BasicEvaluatorParser.RPAREN, 0); }
+		public TerminalNode ADD() { return getToken(BasicEvaluatorParser.ADD, 0); }
+		public TerminalNode SUB() { return getToken(BasicEvaluatorParser.SUB, 0); }
+		public TerminalNode MUL() { return getToken(BasicEvaluatorParser.MUL, 0); }
+		public TerminalNode DIV() { return getToken(BasicEvaluatorParser.DIV, 0); }
+		public TerminalNode EQ() { return getToken(BasicEvaluatorParser.EQ, 0); }
+		public TerminalNode LT() { return getToken(BasicEvaluatorParser.LT, 0); }
+		public TerminalNode GT() { return getToken(BasicEvaluatorParser.GT, 0); }
+		public OperatorExprContext(ExpressionContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof BasicEvaluatorVisitor ) return ((BasicEvaluatorVisitor<? extends T>)visitor).visitOperatorExpr(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -615,16 +615,16 @@ public class BasicEvaluatorParser extends Parser {
 				}
 				break;
 			case 8:
-				_localctx = new OptrExprContext(_localctx);
+				_localctx = new OperatorExprContext(_localctx);
 				enterOuterAlt(_localctx, 8);
 				{
 				setState(81);
 				match(LPAREN);
 				setState(82);
-				((OptrExprContext)_localctx).op = _input.LT(1);
+				((OperatorExprContext)_localctx).op = _input.LT(1);
 				_la = _input.LA(1);
 				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ADD) | (1L << SUB) | (1L << MUL) | (1L << DIV) | (1L << EQ) | (1L << LT) | (1L << GT))) != 0)) ) {
-					((OptrExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
+					((OperatorExprContext)_localctx).op = (Token)_errHandler.recoverInline(this);
 				}
 				else {
 					if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
