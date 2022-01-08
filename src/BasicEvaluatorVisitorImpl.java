@@ -1,11 +1,30 @@
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class BasicEvaluatorVisitorImpl  extends BasicEvaluatorBaseVisitor<BasicEvaluatorInfo> {
     private final Memory memory;
+    private final Set<String> keywords = new HashSet<>();
 
     public BasicEvaluatorVisitorImpl(Memory memory) {
         this.memory = memory;
+        installKeywords();
+    }
+    private void installKeywords() {
+        keywords.add("define");
+        keywords.add("if");
+        keywords.add("while");
+        keywords.add("set");
+        keywords.add("begin");
+        keywords.add("+");
+        keywords.add("-");
+        keywords.add("*");
+        keywords.add("/");
+        keywords.add("=");
+        keywords.add("<");
+        keywords.add(">");
+        keywords.add("print");
     }
 
     @Override
@@ -13,6 +32,10 @@ public class BasicEvaluatorVisitorImpl  extends BasicEvaluatorBaseVisitor<BasicE
         FunctionDefinition function = new FunctionDefinition();
 
         String functionName = ctx.function().getText();
+        if (keywords.contains(functionName)) {
+            System.out.println("Invalid function name: " + functionName);
+            return null;
+        }
         function.name = functionName;
 
         List<BasicEvaluatorParser.VariableContext> arguments = ctx.argList().variable();

@@ -61,9 +61,11 @@ public class BasicEvaluator {
         BasicEvaluatorVisitorImpl visitor = new BasicEvaluatorVisitorImpl(memory);
         BasicEvaluatorInfo info = visitor.visit(tree);
 
-        String functionName = info.getFunctionName();
-        if (functionName != null && functionName.trim().length() > 0) {
-            System.out.println(info.getFunctionName());
+        if (info != null) {
+            String functionName = info.getFunctionName();
+            if (functionName != null && functionName.trim().length() > 0) {
+                System.out.println(info.getFunctionName());
+            }
         }
     }
     private static void parseExpression(String strInput, Memory memory) {
