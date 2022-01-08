@@ -39,7 +39,7 @@ public class SymbolTable {
     }
 
     public void setSymbol(String name, Value value) {
-        if (!environment.empty()) {
+        if (environment.empty()) {
             // add global environment
             this.addEnvironment();
         }

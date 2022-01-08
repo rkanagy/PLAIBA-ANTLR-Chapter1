@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class BasicEvaluatorVisitorImpl  extends BasicEvaluatorBaseVisitor<Value> {
@@ -118,22 +119,28 @@ public class BasicEvaluatorVisitorImpl  extends BasicEvaluatorBaseVisitor<Value>
                 return new Value(null);
             }
 
-            // Step #2: create new local environment
-            symbolTable.addEnvironment();
-
-            // Step #3: get values of actual arguments and add to local
+            // Step #2: get values of actual arguments and add to local
             //          environment using formal argument names
+            Value[] actualArgs = new Value[argCount];
             int i = 0;
             while (ctx.expression(i) != null) {
                 Value argValue = visit(ctx.expression(i));
-                symbolTable.setSymbol(function.argumentList.get(i), argValue);
+                actualArgs[i] = argValue;
                 i++;
             }
 
-            // Step #4: execute function expression
+            // Step #3: create new local environment
+            symbolTable.addEnvironment();
+
+            // Step #4: add actual args to formal args in local environment of function
+            for (int j = 0; j < argCount; j++) {
+                symbolTable.setSymbol(function.argumentList.get(j), actualArgs[j]);
+            }
+
+            // Step #5: execute function expression
             Value functionValue = visit(function.expression);
 
-            // Step #5: remove local environment
+            // Step #6: remove local environment
             symbolTable.removeEnvironment();
 
             return functionValue;
