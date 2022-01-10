@@ -123,8 +123,7 @@ public class BasicEvaluatorVisitorImpl  extends BasicEvaluatorBaseVisitor<BasicE
                 return new BasicEvaluatorInfo(new Value(null));
             }
 
-            // Step #2: get values of actual arguments and add to local
-            //          environment using formal argument names
+            // Step #2: get values of actual arguments
             Value[] actualArgs = new Value[argCount];
             int i = 0;
             while (ctx.expression(i) != null) {
@@ -137,6 +136,7 @@ public class BasicEvaluatorVisitorImpl  extends BasicEvaluatorBaseVisitor<BasicE
             memory.addLocalEnvironment();
 
             // Step #4: add actual args to formal args in local environment of function
+            //          using the formal argument names
             for (int j = 0; j < argCount; j++) {
                 memory.setLocalSymbol(function.argumentList.get(j), actualArgs[j]);
             }
