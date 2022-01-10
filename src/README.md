@@ -67,13 +67,13 @@ definitions.  It only supports one type of value and that is an Integer.  Variab
 are stored in the global environment.  Variable names can contain any character
 except spaces, open and close parentheses, a semicolon, or tabs, carriage returns,
 or line feeds.  Parentheses are used to delimit expressions and function 
-expressions, much like it does in the family of programming languages based on LISP.  
-Semicolons are used to start a comment which goes to the end of the current line.  
+expressions, much like it does in the family of programming languages based on LISP.
+Semicolons are used to start a comment which goes to the end of the current line.
 When a function is called, the actual arguments passed to the function are 
 evaluated to a value, and then the formal arguments of the function are set to 
 these actual argument values inside a local environment for that function.  The 
 **visitFunctionExpr** method in the [BasicEvaluatorVisitorImpl.java](BasicEvaluatorVisitorImpl.java) 
-file shows this logic, which is the only complicated part of the Interpreter.  
+file shows this logic, which is the only complicated part of the Interpreter.
 All other visitor functions used to implement the Interpreter are pretty 
 straightforward.  The use of a stack for the local environments fully support 
 recursive function calls.  The last function definition in the [test01.lp](test01.lp) 
