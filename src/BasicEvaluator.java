@@ -20,7 +20,7 @@ public class BasicEvaluator {
                 quittingTime = true;
             else if (strInput.trim().equals("clear")) {
                 memory.clear();
-            } else if (strInput.startsWith("define", 1)) {
+            } else if (strInput.trim().startsWith("define", 1)) {
                 parseDefinition(strInput, memory);
             } else {
                 parseExpression(strInput, memory);
