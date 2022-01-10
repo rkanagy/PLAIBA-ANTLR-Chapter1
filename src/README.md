@@ -31,7 +31,8 @@ This file contains the main Read-Eval-Print Loop which gets input from the user,
 that consists of a set of lines containing one expression or function definition. 
 The expressions or function definitions entered by the user are then parsed and
 evaluated.  See the methods named **parseDefition**, **parseExpression**, and 
-**getParser** in this file to see how to use ANTLR to parse this language.
+**getParser** in this file to see how to use ANTLR to parse this language from the
+string entered by the user at the REPL prompt.
 
 Expressions are evaluated to a single Integer value and displayed as
 output.  Function definitions are then parsed and then added to list of function
