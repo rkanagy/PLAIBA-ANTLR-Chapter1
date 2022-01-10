@@ -29,8 +29,11 @@ consisting of the following files:
 The function main is located in the file [BasicEvaluator](BasicEvaluator.java).
 This file contains the main Read-Eval-Print Loop which gets input from the user,
 that consists of a set of lines containing one expression or function definition. 
-The expressions or function definitions entered by the Updated README.md in the src folder to fix a few formatting issues with the last paragraph.user are then parsed and
-evaluated.  Expressions are evaluated to a single Integer value and displayed as
+The expressions or function definitions entered by the user are then parsed and
+evaluated.  See the methods named **parseDefition**, **parseExpression**, and 
+**getParser** in this file to see how to use ANTLR to parse this language.
+
+Expressions are evaluated to a single Integer value and displayed as
 output.  Function definitions are then parsed and then added to list of function
 definitions available to subsequent expressions entered, and its name is displayed 
 as output.
