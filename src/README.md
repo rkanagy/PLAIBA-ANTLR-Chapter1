@@ -29,7 +29,7 @@ consisting of the following files:
 The function main is located in the file [BasicEvaluator](BasicEvaluator.java).
 This file contains the main Read-Eval-Print Loop which gets input from the user,
 that consists of a set of lines containing one expression or function definition. 
-The expressions or function definitions entered by the user are then parsed and
+The expressions or function definitions entered by the Updated README.md in the src folder to fix a few formatting issues with the last paragraph.user are then parsed and
 evaluated.  Expressions are evaluated to a single Integer value and displayed as
 output.  Function definitions are then parsed and then added to list of function
 definitions available to subsequent expressions entered, and its name is displayed 
@@ -79,3 +79,16 @@ straightforward.  The use of a stack for the local environments fully support
 recursive function calls.  The last function definition in the [test01.lp](test01.lp) 
 file is a recursive function definition for the Greatest Common Divisor 
 algorithm (gcd).
+
+### TODO
+1. Better handling of parser errors
+2. Add a **read** function to the language that reads input from the prompt
+3. Add a **for** loop operation to the language
+4. Experiment with passing values by reference during function calls, instead
+   of by value, as it currently does.
+5. Add a **load** function to the REPL that loads a file to be evaluated
+6. Add local variables to functions
+7. Add real numbers to the language
+8. Implement static type-checking to the language as well as type-checking to
+   distinguish between *statements* and *expressions* and between *procedures* 
+   and *functions*
