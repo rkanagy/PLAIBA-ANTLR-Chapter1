@@ -1,3 +1,5 @@
+package BasicEvaluatorInterpreter;
+
 public record Value(Integer value) {
     public static final Value TRUE = new Value(1);
     public static final Value FALSE = new Value(0);

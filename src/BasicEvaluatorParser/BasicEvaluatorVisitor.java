@@ -1,4 +1,5 @@
 // Generated from BasicEvaluator.g4 by ANTLR 4.9.3
+package BasicEvaluatorParser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -84,13 +85,6 @@ public interface BasicEvaluatorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBeginExpr(BasicEvaluatorParser.BeginExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code functionExpr}
-	 * labeled alternative in {@link BasicEvaluatorParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFunctionExpr(BasicEvaluatorParser.FunctionExprContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code operatorExpr}
 	 * labeled alternative in {@link BasicEvaluatorParser#expression}.
 	 * @param ctx the parse tree
@@ -98,18 +92,25 @@ public interface BasicEvaluatorVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitOperatorExpr(BasicEvaluatorParser.OperatorExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code printExpr}
-	 * labeled alternative in {@link BasicEvaluatorParser#expression}.
+	 * Visit a parse tree produced by the {@code functionExpr}
+	 * labeled alternative in {@link BasicEvaluatorParser#operator}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPrintExpr(BasicEvaluatorParser.PrintExprContext ctx);
+	T visitFunctionExpr(BasicEvaluatorParser.FunctionExprContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link BasicEvaluatorParser#value}.
+	 * Visit a parse tree produced by the {@code valueOpExpr}
+	 * labeled alternative in {@link BasicEvaluatorParser#operator}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitValue(BasicEvaluatorParser.ValueContext ctx);
+	T visitValueOpExpr(BasicEvaluatorParser.ValueOpExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link BasicEvaluatorParser#valueOp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitValueOp(BasicEvaluatorParser.ValueOpContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link BasicEvaluatorParser#function}.
 	 * @param ctx the parse tree
@@ -122,4 +123,10 @@ public interface BasicEvaluatorVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitVariable(BasicEvaluatorParser.VariableContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link BasicEvaluatorParser#value}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitValue(BasicEvaluatorParser.ValueContext ctx);
 }

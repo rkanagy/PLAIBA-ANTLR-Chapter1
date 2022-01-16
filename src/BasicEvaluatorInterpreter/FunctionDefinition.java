@@ -1,4 +1,8 @@
+package BasicEvaluatorInterpreter;
+
 import java.util.ArrayList;
+
+import BasicEvaluatorParser.*;
 
 public class FunctionDefinition {
     public FunctionDefinition() {

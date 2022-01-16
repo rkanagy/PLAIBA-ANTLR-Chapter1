@@ -7,6 +7,9 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import BasicEvaluatorParser.*;
+import BasicEvaluatorInterpreter.*;
+
 public class BasicEvaluator {
     public static void main(String[] args) throws Exception {
         Memory memory = new Memory();
@@ -20,13 +23,10 @@ public class BasicEvaluator {
                 quittingTime = true;
             else if (strInput.trim().equals("clear")) {
                 memory.clear();
-            } else if (strInput.trim().startsWith("define", 1)) {
-                parseDefinition(strInput, memory);
             } else {
-                parseExpression(strInput, memory);
+                parseInput(strInput, memory);
             }
         }
-
     }
 
     private static String getInput() throws IOException {
@@ -54,31 +54,25 @@ public class BasicEvaluator {
         return String.join("\n", lines);
     }
 
-    private static void parseDefinition(String strInput, Memory memory) {
+    private static void parseInput(String strInput, Memory memory) {
         BasicEvaluatorParser parser = getParser(strInput);
-        ParseTree tree = parser.funDef();
+        ParseTree tree = parser.prog();
 
         BasicEvaluatorVisitorImpl visitor = new BasicEvaluatorVisitorImpl(memory);
-        BasicEvaluatorInfo info = visitor.visit(tree);
+        EvaluatorInput result = visitor.visit(tree);
 
-        if (info != null) {
-            String functionName = info.getFunctionName();
+        if (result instanceof FunctionDef functionDef) {
+            String functionName = functionDef.getName();
             if (functionName != null && functionName.trim().length() > 0) {
-                System.out.println(info.getFunctionName());
+                System.out.println(functionName);
+            }
+        } else if (result instanceof ExprResult exprResult) {
+            Value value = exprResult.getResult();
+            if (value != null && value.isDefined()) {
+                System.out.println(value.getValue());
             }
         }
-    }
-    private static void parseExpression(String strInput, Memory memory) {
-        BasicEvaluatorParser parser = getParser(strInput);
-        ParseTree tree = parser.expression();
-
-        BasicEvaluatorVisitorImpl visitor = new BasicEvaluatorVisitorImpl(memory);
-        BasicEvaluatorInfo info = visitor.visit(tree);
-
-        Value value = info.getExpressionValue();
-        if (value != null && value.isDefined()) {
-            System.out.println(value.getValue());
-        }
+        System.out.println();
     }
 
     private static BasicEvaluatorParser getParser(String strInput) {
