@@ -17,7 +17,8 @@ expression: value                                                               
 operator  : function                                                              #functionExpr
           | valueOp                                                               #valueOpExpr
           ;
-valueOp   : op=('+'|'-'|'*'|'/'|'='|'<'|'>'|'print') ;
+
+valueOp   : ADD | SUB | MUL | DIV | EQ | LT | GT | PRINT ;
 function  : NAME ;
 variable  : NAME ;
 value     : INTEGER ;

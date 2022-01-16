@@ -672,7 +672,6 @@ public class BasicEvaluatorParser extends Parser {
 	}
 
 	public static class ValueOpContext extends ParserRuleContext {
-		public Token op;
 		public TerminalNode ADD() { return getToken(BasicEvaluatorParser.ADD, 0); }
 		public TerminalNode SUB() { return getToken(BasicEvaluatorParser.SUB, 0); }
 		public TerminalNode MUL() { return getToken(BasicEvaluatorParser.MUL, 0); }
@@ -700,10 +699,9 @@ public class BasicEvaluatorParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(91);
-			((ValueOpContext)_localctx).op = _input.LT(1);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ADD) | (1L << SUB) | (1L << MUL) | (1L << DIV) | (1L << EQ) | (1L << LT) | (1L << GT) | (1L << PRINT))) != 0)) ) {
-				((ValueOpContext)_localctx).op = (Token)_errHandler.recoverInline(this);
+			_errHandler.recoverInline(this);
 			}
 			else {
 				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;

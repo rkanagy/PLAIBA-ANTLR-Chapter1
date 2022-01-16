@@ -55,22 +55,26 @@ public class BasicEvaluator {
     }
 
     private static void parseInput(String strInput, Memory memory) {
-        BasicEvaluatorParser parser = getParser(strInput);
-        ParseTree tree = parser.prog();
+        try {
+            BasicEvaluatorParser parser = getParser(strInput);
+            ParseTree tree = parser.prog();
 
-        BasicEvaluatorVisitorImpl visitor = new BasicEvaluatorVisitorImpl(memory);
-        EvaluatorInput result = visitor.visit(tree);
+            BasicEvaluatorVisitorImpl visitor = new BasicEvaluatorVisitorImpl(memory);
+            EvaluatorInput result = visitor.visit(tree);
 
-        if (result instanceof FunctionDef functionDef) {
-            String functionName = functionDef.getName();
-            if (functionName != null && functionName.trim().length() > 0) {
-                System.out.println(functionName);
+            if (result instanceof FunctionDef functionDef) {
+                String functionName = functionDef.getName();
+                if (functionName != null && functionName.trim().length() > 0) {
+                    System.out.println(functionName);
+                }
+            } else if (result instanceof ExprResult exprResult) {
+                Value value = exprResult.getResult();
+                if (value != null && value.isDefined()) {
+                    System.out.println(value.getValue());
+                }
             }
-        } else if (result instanceof ExprResult exprResult) {
-            Value value = exprResult.getResult();
-            if (value != null && value.isDefined()) {
-                System.out.println(value.getValue());
-            }
+        } catch (InterpreterException err) {
+            System.out.println(err.getMessage());
         }
         System.out.println();
     }

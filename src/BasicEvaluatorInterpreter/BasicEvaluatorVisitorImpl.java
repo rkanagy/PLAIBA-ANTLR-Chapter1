@@ -1,11 +1,11 @@
 package BasicEvaluatorInterpreter;
 
+import BasicEvaluatorParser.BasicEvaluatorBaseVisitor;
+import BasicEvaluatorParser.BasicEvaluatorParser;
+
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-
-import BasicEvaluatorParser.*;
 
 public class BasicEvaluatorVisitorImpl  extends BasicEvaluatorBaseVisitor<EvaluatorInput> {
     private final Memory memory;
@@ -37,8 +37,7 @@ public class BasicEvaluatorVisitorImpl  extends BasicEvaluatorBaseVisitor<Evalua
 
         String functionName = ctx.function().getText();
         if (keywords.contains(functionName)) {
-            System.out.println("Invalid function name: " + functionName);
-            return null;
+            throw new InterpreterException("Invalid function name: " + functionName, null);
         }
         function.name = functionName;
 
@@ -56,37 +55,52 @@ public class BasicEvaluatorVisitorImpl  extends BasicEvaluatorBaseVisitor<Evalua
 
     @Override
     public ExprResult visitValueExpr(BasicEvaluatorParser.ValueExprContext ctx) {
-        String strValue = ctx.value().getText();
-        return new ExprResult(new Value(Integer.parseInt(strValue)));
+        try {
+            Integer value = Integer.parseInt(ctx.value().getText());
+            return new ExprResult(new Value(value));
+        } catch (NumberFormatException err) {
+            throw new InterpreterException("Value not an Integer", err);
+        }
     }
 
     @Override
     public ExprResult visitVariableExpr(BasicEvaluatorParser.VariableExprContext ctx) {
-        String variableName = ctx.variable().getText();
+        Variable variable = (Variable)visit(ctx.variable());
+        String variableName = variable.getVariableName();
         Value value = memory.getSymbol(variableName);
         if (value != null) {
             return new ExprResult(value);
         } else {
-            System.out.println("Undefined variable: " + variableName);
-
-            return new ExprResult(new Value(null));
+            throw new InterpreterException("Undefined variable: " + variableName, null);
         }
     }
 
     @Override
     public ExprResult visitIfExpr(BasicEvaluatorParser.IfExprContext ctx) {
         ExprResult comparison = (ExprResult) visit(ctx.expression(0));
-        if (comparison.getResult().isFalse())
-            return (ExprResult) visit(ctx.expression(2));
-        else
-            return (ExprResult) visit(ctx.expression(1));
+        if (comparison == null) throw new InterpreterException("if condition invalid", null);
+
+        if (comparison.getResult().isFalse()) {
+            ExprResult falseResult = (ExprResult) visit(ctx.expression(2));
+            if (falseResult == null) throw new InterpreterException("if false clause invalid", null);
+            return falseResult;
+        }
+        else {
+            ExprResult trueResult = (ExprResult) visit(ctx.expression(1));
+            if (trueResult == null) throw new InterpreterException("if true clause invalid", null);
+            return trueResult;
+        }
     }
 
     @Override
     public ExprResult visitWhileExpr(BasicEvaluatorParser.WhileExprContext ctx) {
         ExprResult condition = (ExprResult) visit(ctx.expression(0));
+        if (condition == null) throw new InterpreterException("while condition invalid", null);
+
         while (condition.getResult().isTrue()) {
-            visit(ctx.expression(1));
+            ExprResult result = (ExprResult) visit(ctx.expression(1));
+            if (result == null) throw new InterpreterException("while loop invalid", null);
+
             condition = (ExprResult) visit(ctx.expression(0));
         }
         return condition;
@@ -94,16 +108,21 @@ public class BasicEvaluatorVisitorImpl  extends BasicEvaluatorBaseVisitor<Evalua
 
     @Override
     public ExprResult visitSetExpr(BasicEvaluatorParser.SetExprContext ctx) {
-        String variable = ctx.variable().getText();
+        Variable variable = (Variable) visit(ctx.variable());
+        if (variable == null) throw new InterpreterException("set variable invalid", null);
         ExprResult value = (ExprResult) visit(ctx.expression());
+        if (value == null) throw new InterpreterException("set expression invalid", null);
 
-        memory.setSymbol(variable, value.getResult());
+        memory.setSymbol(variable.getVariableName(), value.getResult());
 
         return value;
     }
 
     @Override
     public ExprResult visitBeginExpr(BasicEvaluatorParser.BeginExprContext ctx) {
+        if (ctx.expression(0) == null)
+            throw new InterpreterException("begin requires at least one expression", null);
+
         ExprResult currentValue = (ExprResult) visit(ctx.expression(0));
         int i = 1;
 
@@ -117,89 +136,68 @@ public class BasicEvaluatorVisitorImpl  extends BasicEvaluatorBaseVisitor<Evalua
     }
 
     @Override
+    public ExprResult visitOperatorExpr(BasicEvaluatorParser.OperatorExprContext ctx) {
+        Operation operation = (Operation) visit(ctx.operator());
+        if (operation instanceof Operator operator) {
+            return applyOperator(operator.getOperator(), ctx.expression());
+        } else if (operation instanceof FunctionCall functionCall) {
+            return applyFunctionCall(functionCall.getFunctionName(), ctx.expression());
+        } else {
+            return new ExprResult(new Value(null));
+        }
+    }
+
+    @Override
     public Operation visitFunctionExpr(BasicEvaluatorParser.FunctionExprContext ctx) {
         String functionName = ctx.function().getText();
-        return new Operation(functionName);
+        return new FunctionCall(functionName);
     }
 
     @Override
     public Operation visitValueOpExpr(BasicEvaluatorParser.ValueOpExprContext ctx) {
-        int valueOp = ctx.valueOp().op.getType();
-        return new Operation(valueOp);
+        String operator = ctx.valueOp().getText();
+        return new Operator(operator);
     }
 
-    @Override
-    public ExprResult visitOperatorExpr(BasicEvaluatorParser.OperatorExprContext ctx) {
-        Operation operation = (Operation) visit(ctx.operator());
-        return switch(operation.getOperationType()) {
-            case Operation.OPERATOR -> applyOperator(operation.getOperator(), ctx.expression());
-            case Operation.FUNCTION_CALL -> applyFunctionCall(operation.getFunctionName(), ctx.expression());
-            default -> new ExprResult(new Value(null));
-        };
-    }
-
-    private ExprResult applyOperator(int operator,
+    private ExprResult applyOperator(String operator,
                                      List<BasicEvaluatorParser.ExpressionContext> expressions) {
+        // check if correct number of operands were parsed
         int numOperands = expressions.size();
-        if (numOperands == 2)
+        boolean valid;
+        if (operator.equals("print")) {
+            valid = numOperands == 1;
+        } else {
+            valid = numOperands == 2;
+        }
+
+        if (valid)
         {
-            ExprResult left = (ExprResult) visit(expressions.get(0));
-            Value leftValue = left.getResult();
-            ExprResult right = (ExprResult) visit(expressions.get(1));
-            Value rightValue = right.getResult();
+            Integer op1Value = ((ExprResult) visit(expressions.get(0))).getResult().getValue();
 
             switch (operator) {
-                case BasicEvaluatorParser.ADD -> {
-                    return new ExprResult(new Value(leftValue.getValue() + rightValue.getValue()));
+                case "+", "-", "*", "/", "=", "<", ">" -> {
+                    Integer op2Value = ((ExprResult) visit(expressions.get(1))).getResult().getValue();
+                    Integer result = switch (operator) {
+                        case "+" -> op1Value + op2Value;
+                        case "-" -> op1Value - op2Value;
+                        case "*" -> op1Value * op2Value;
+                        case "/" -> op1Value / op2Value;
+                        case "=" -> op1Value.equals(op2Value) ? Value.TRUE.getValue() : Value.FALSE.getValue();
+                        case "<" -> op1Value < op2Value ? Value.TRUE.getValue() : Value.FALSE.getValue();
+                        case ">" -> op1Value > op2Value ? Value.TRUE.getValue() : Value.FALSE.getValue();
+                        default -> null;
+                    };
+                    return new ExprResult(new Value(result));
                 }
 
-                case BasicEvaluatorParser.SUB -> {
-                    return new ExprResult(new Value(leftValue.getValue() - rightValue.getValue()));
+                case "print" -> {
+                    System.out.println(op1Value);
+                    return new ExprResult(new Value(op1Value));
                 }
-
-                case BasicEvaluatorParser.MUL -> {
-                    return new ExprResult(new Value(leftValue.getValue() * rightValue.getValue()));
-                }
-
-                case BasicEvaluatorParser.DIV -> {
-                    return new ExprResult(new Value(leftValue.getValue() / rightValue.getValue()));
-                }
-
-                case BasicEvaluatorParser.EQ -> {
-                    return new ExprResult(Objects.equals(leftValue.getValue(), rightValue.getValue())
-                            ? Value.TRUE
-                            : Value.FALSE);
-                }
-
-                case BasicEvaluatorParser.LT -> {
-                    return new ExprResult(leftValue.getValue() < rightValue.getValue()
-                            ? Value.TRUE
-                            : Value.FALSE);
-                }
-
-                case BasicEvaluatorParser.GT -> {
-                    return new ExprResult(leftValue.getValue() > rightValue.getValue()
-                            ? Value.TRUE
-                            : Value.FALSE);
-                }
-
-                default -> {
-                    System.out.println("Invalid operator");
-                    return new ExprResult(new Value(null));
-                }
+                default -> throw new InterpreterException("Invalid operator: " + operator, null);
             }
-        } else if (numOperands == 1) {
-            ExprResult operand = (ExprResult) visit(expressions.get(0));
-            if (operator == BasicEvaluatorParser.PRINT) {
-                System.out.println(operand.getResult().getValue());
-                return operand;
-            }
-
-            System.out.println("Invalid operator");
-            return new ExprResult(new Value(null));
         } else {
-            System.out.println("Invalid number of operands for operator");
-            return new ExprResult(new Value(null));
+            throw new InterpreterException("Wrong number of arguments to " + operator, null);
         }
     }
 
@@ -210,14 +208,18 @@ public class BasicEvaluatorVisitorImpl  extends BasicEvaluatorBaseVisitor<Evalua
             // Step #1: check actual arg count with formal arg count
             int argCount = function.argumentList.size();
             if (argCount != expressions.size()) {
-                System.out.println("Wrong number of arguments to: " + functionName);
-                return new ExprResult(new Value(null));
+                throw new InterpreterException("Wrong number of arguments to: " + functionName, null);
             }
 
             // Step #2: get values of actual arguments
             Value[] actualArgs = new Value[argCount];
             for (int i = 0; i < argCount; i++) { // argCount == expressions.size()
                 ExprResult argValue = (ExprResult) visit(expressions.get(i));
+                if (argValue == null)
+                    throw new InterpreterException("invalid actual argument for formal argument " +
+                            function.argumentList.get(i) +
+                            " in function " +
+                            functionName, null);
                 actualArgs[i] = argValue.getResult();
             }
 
@@ -238,8 +240,14 @@ public class BasicEvaluatorVisitorImpl  extends BasicEvaluatorBaseVisitor<Evalua
 
             return functionValue;
         } else {
-            System.out.println("Undefined function: " + functionName);
-            return new ExprResult(new Value(null));
+            throw new InterpreterException("Undefined function: " + functionName, null);
         }
+    }
+
+    @Override
+    public Variable visitVariable(BasicEvaluatorParser.VariableContext ctx) {
+        String variableName = ctx.getText();
+        if (ctx.exception != null) throw new InterpreterException("Invalid variable: " + variableName, null);
+        return new Variable(variableName);
     }
 }

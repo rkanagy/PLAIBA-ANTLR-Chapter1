@@ -94,8 +94,11 @@ classDiagram
    direction TD
    EvaluatorInput <|-- FunctionDef
    EvaluatorInput <|-- Expression
-   Expression *-- Operation
-   Expression *-- ExprResult
+   Expression <|-- Operation
+   Expression <|-- ExprResult
+   Expression <|-- Variable
+   Operation <|-- Operator
+   Operation <|-- FunctionCall
    Value <|-- Integer
    class FunctionDef {
       +String name
@@ -105,6 +108,9 @@ classDiagram
    }
    class ExprResult {
       +Value result
+   }
+   class Variable {
+      +String name
    }
 ```
 
