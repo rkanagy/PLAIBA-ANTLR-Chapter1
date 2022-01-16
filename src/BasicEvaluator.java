@@ -73,10 +73,10 @@ public class BasicEvaluator {
                     System.out.println(value.getValue());
                 }
             }
+            System.out.println();
         } catch (InterpreterException err) {
             System.out.println(err.getMessage());
         }
-        System.out.println();
     }
 
     private static BasicEvaluatorParser getParser(String strInput) {
